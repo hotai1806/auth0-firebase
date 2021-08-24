@@ -2,12 +2,14 @@ import { createParamDecorator, ExecutionContext, HttpStatus, Injectable, NestMid
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NextFunction, Request, Response } from 'express';
 import { FirebaseAuthService } from '../services/firebase.service';
+import { Logger } from '@nestjs/common';
 export interface RequestModel extends Request {
   user: any;
 }
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly firebaseService: FirebaseAuthService){}
+  private readonly logger = new Logger(AuthMiddleware.name)
 
   public async use(req: RequestModel, _: Response, next: NextFunction) {
     try {
@@ -15,6 +17,7 @@ export class AuthMiddleware implements NestMiddleware {
     if (!authorization) {
       throw new HttpException({ message: 'missing authz header' }, HttpStatus.BAD_REQUEST);
     }
+    this.logger.log('Doing something...');
     const user = await this.firebaseService.authenticate(authorization);
     console.log(user);
     req.user = user;

@@ -16,8 +16,9 @@ export class FirebaseAuthService {
   public async authenticate(authToken: string): Promise<any> {
     const tokenString = this.getToken(authToken);
     try {
+   
       const decodedToken: admin.auth.DecodedIdToken = await admin.auth().verifyIdToken(tokenString);
-      console.log(decodedToken);
+     
       const  {
         email,
         uid,
